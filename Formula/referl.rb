@@ -87,8 +87,81 @@ class Referl < Formula
     end
   end
 
-  def test_referl_start
-    pid = fork do # TODO: rename
+  def test_referl_start_no_arg
+    pid = fork do
+      system "referl"
+    end
+    puts "=== Test Case: No arg ====================================="
+    puts "Forked pid: #{pid}"
+    sleep 1
+
+    # CHECK IF THE PARENT PROCESS EVEN ALIVE
+    begin
+      Process.getpgid(pid)
+    rescue Errno::ESRCH
+      return false
+    end
+
+    all_pids = `pgrep -f "bin/referl"`.split("\n")
+    exec_script_pid = `pgrep -f "referl_boot"`.split("\n")[0]
+    all_pids.delete(exec_script_pid)
+
+    possible_pids = []
+    if all_pids.empty?
+      puts "No referl instance found!"
+      return false
+
+    elsif all_pids.length == 1
+      command = "ps -o ppid= -p #{all_pids[0]}"
+      parent_of = Integer(shell_output(command))
+      puts "Exactly one referl instance found: #{all_pids[0]} => Parent is: #{parent_of}"
+      if parent_of == pid
+        puts "PID is ok."
+        possible_pids.push(all_pids[0])
+      else
+        puts "The found referl instance was not started by process: #{pid}"
+      end
+
+    elsif all_pids.length > 1
+      puts "Multiple referl instance found"
+      all_pids.each do |x|
+        command = "ps -o ppid= -p #{x}"
+        parent_of = Integer(shell_output(command))
+        puts "Current pid: #{x} => Parent is: #{parent_of}"
+        if Integer(parent_of) == pid
+          puts "PID is ok."
+          possible_pids.push(x)
+        end
+      end
+    end
+
+    success = false
+    if possible_pids.length == 1
+      begin
+        Process.getpgid(Integer(possible_pids[0]))
+        puts "Found referl pid: #{possible_pids[0]} is alive."
+        success = true
+      rescue Errno::ESRCH
+        puts "Found referl pid: #{possible_pids[0]} is NOT alive."
+      end
+    else
+      puts "No/Multiple referl proc. were found with this proc. Count: #{possible_pids.length}"
+    end
+
+    sleep 1
+    erts_pids = `pgrep -f "erlang/erts"`.split("\n")
+    erts_pids.each do |p|
+      parent_of = Integer(shell_output("ps -o ppid= -p #{p}"))
+      if Integer(parent_of) == Integer(exec_script_pid)
+        puts "Killing ERTS pid: #{p}, which is child of: #{parent_of} (exec script)"
+        system "kill", p
+      end
+    end
+    success
+  end
+
+  def test_referl_start_name
+    pid = fork do
       system "referl", "-name", "test@localhost"
     end
     puts "=== Test Case: Name arg ====================================="
@@ -148,16 +221,14 @@ class Referl < Formula
       puts "No/Multiple referl proc. were found with this proc. Count: #{possible_pids.length}"
     end
 
-    sleep 1 # TODO: wait?
+    sleep 1
     erts_pids = `pgrep -f "erlang/erts"`.split("\n")
     erts_pids.each do |p|
       parent_of = Integer(shell_output("ps -o ppid= -p #{p}"))
-      if Integer(parent_of) == Integer(exec_script_pid) # TODO: make all pids integer
+      if Integer(parent_of) == Integer(exec_script_pid)
         puts "Killing ERTS pid: #{p}, which is child of: #{parent_of} (exec script)"
         system "kill", p
       end
-    ensure
-      # TODO: ensure cleanup
     end
     success
   end
@@ -166,12 +237,11 @@ class Referl < Formula
     # Test Case #1 - Starting referl with bad arguments => should fail
     assert_equal(false, test_referl_badarg)
 
-    # Test Case #2 - Starting referl with no arguments
-    assert_equal(true, test_referl_start)
+    # Test Case - Starting referl with no arguments
+    #assert_equal(true, test_referl_start_no_arg)
 
-    # Test Case #3 - referl -name erlang@elte
-
-    # Test Case #4 - referl -name -erlang
+    # Test Case #2 - Starting referl with only -name test@localhost arguments
+    #assert_equal(true, test_referl_start_name)
 
     # Test Case #5 - Starting referl with: -db kcmini
     # referl -db kcmini -sname robi
