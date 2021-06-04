@@ -90,7 +90,7 @@ class Referl < Formula
         system "referl -name test@localhost"
       end
       kill_pid = Process.pid
-      puts "=== Test Case: No  Arg ======================================"
+      puts "=== Test Case: Name arg ====================================="
       puts "Forked pid: #{pid}"
       sleep 1
 
@@ -102,11 +102,8 @@ class Referl < Formula
       end
 
       all_pids = `pgrep -f "bin/referl"`.split("\n")
-      puts "Process found with 'referl': #{all_pids.length}"
       exec_script_pid = `pgrep -f "referl_boot"`.split("\n")[0]
       all_pids.delete(exec_script_pid)
-      puts "Process found with 'referl' –exec_script_pid: #{all_pids.length}"
-
 
       possible_pids = []
       if all_pids.length == 0
@@ -137,29 +134,34 @@ class Referl < Formula
         end
       end
 
-
+      success = false
       if possible_pids.length == 1 
         begin
           Process.getpgid(Integer(possible_pids[0]))
           puts "Found referl pid: #{possible_pids[0]} is alive."
-          return true 
+          success = true 
         rescue Errno::ESRCH
           puts "Found referl pid: #{possible_pids[0]} is NOT alive."
-          return false
-      end
-      elsif possible_pids.length == 0
-        puts "No referl instance passed the previous validation process. (parental issues)"
-        return false
+        end
       else
-        puts "Multiple referl process were assosiated with this process, which shoudl not happen."
+        puts "No/Multiple referl process were assosiated with this process, which shoudl not happen. Count: #{possible_pids.length}"
       end
 
-      #system "kill", "ps -o pid= --ppid $$"
+      sleep 1 # todo wait?
+      erts_pids = `pgrep -f "erlang/erts"`.split("\n")
+      erts_pids.each do |p|
+          parent_of = Integer(shell_output("ps -o ppid= -p #{p}"))
+          if Integer(parent_of) == Integer(exec_script_pid) #todo make all pids integer
+            puts "Killing ERTS pid: #{p}, which is child of: #{parent_of} (exec script)"
+            system "kill", p
+          end
+      end
+
+     
 
     ensure
-      system "kill", "ps -o pid= --ppid #{pid}"
-      #pids_kill = shell_output("ps -o pid= --ppid $$")
-      #system "kill", "ps -o pid= --ppid $$"
+      #todo ensure cleanup
+      return success
     end
 
   end
