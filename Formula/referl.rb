@@ -5,15 +5,17 @@
 class Referl < Formula
   desc "Refactoring software for Erlang language by ELTE and Ericson"
   homepage "https://plc.inf.elte.hu/erlang/index.html"
-  url "https://plc.inf.elte.hu/erlang/dl/refactorerl-0.9.20.08_v2.zip"
+  #url "https://plc.inf.elte.hu/erlang/dl/refactorerl-0.9.20.08_v2.zip"
+  url "http://plc.inf.elte.hu/erlang/dl/RefactorErl_trunk.zip"
   version "0.9.20.08"
-  sha256 "52f0778c42f7c48490f93b07a435cb3f8c3573810765b6255145e6972edc0cea"
+  #sha256 "52f0778c42f7c48490f93b07a435cb3f8c3573810765b6255145e6972edc0cea"
+  sha256 "8a1bd8b17e872457027203cd256cdb03628b9589d0e6d922027e29566cb78c3b"
   license "LGPL-3.0-only" # SPDX Representation for: GNU Lesser General Public License v3.0 only
 
   depends_on "erlang"
-  depends_on "gcc" => "4.9.1"
-  depends_on "graphviz" => "2.47.1"
-  depends_on "yaws" => "2.0.9"
+  depends_on "gcc" 
+  depends_on "graphviz" 
+  depends_on "yaws"
 
   bottle :unneeded
 
@@ -21,7 +23,7 @@ class Referl < Formula
   def create_exec_script
     out_file = File.new("bin/referl_exec", "w")
     out_file.puts("#\!\/bin\/bash")
-    out_file.puts("#{String.new(HOMEBREW_PREFIX)}/Cellar/referl/+#{version}/bin/referl_boot -base #{String.new(HOMEBREW_PREFIX)}/Cellar/referl/#{version}/ $@")
+    out_file.puts("#{String.new(HOMEBREW_PREFIX)}/Cellar/referl/#{version}/bin/referl_boot -base #{String.new(HOMEBREW_PREFIX)}/Cellar/referl/#{version}/ $@")
     out_file.close
   end
 
@@ -82,81 +84,84 @@ class Referl < Formula
   end
 
   def test_referl_start
-    pid = fork do #todo rename
-      system "referl -name test@localhost"
-    end
-    puts "=== Test Case: No  Arg ======================================"
-    puts "Forked pid: #{pid}"
-    sleep 1
-
-    # CHECK IF THE PARENT PROCESS EVEN ALIVE
+    kill_pid = 0
     begin
-      Process.getpgid(pid)
-    rescue Errno::ESRCH
-      return false
-    end
+      pid = fork do #todo rename
+        system "referl -name test@localhost"
+      end
+      kill_pid = Process.pid
+      puts "=== Test Case: No  Arg ======================================"
+      puts "Forked pid: #{pid}"
+      sleep 1
 
-    all_pids = `pgrep -f "bin/referl"`.split("\n")
-    puts "Process found with 'referl': #{all_pids.length}"
-    exec_script_pid = `pgrep -f "referl_boot"`.split("\n")[0]
-    all_pids.delete(exec_script_pid)
-    puts "Process found with 'referl' –exec_script_pid: #{all_pids.length}"
-
-    
-    #! KÉRDÉS: lehet több referl párhuzamosan indítani (nekem nem sikerült)
-    #! Ha felkell készíteni a konkerinciára ez egy jó kezdet lehet
-    #! Docker?
-
-    #! Elszáll a tesztelő, mert a gyerek hibát dob
-    #! Mi lenne a megfelelő viselkedés?
-    #! Lelőjjem az erts-et? Többi erlang program, többi referl
-    #? Node name megváltoztatása
-
-    possible_pids = []
-    if all_pids.length == 0
-      puts "No referl instance found!"
-      return false
-
-    elsif all_pids.length == 1
-      command = "ps -o ppid= -p #{all_pids[0]}"
-      parent_of = Integer(shell_output(command))
-      puts "Exactly one referl instance found: #{all_pids[0]} => Parent is: #{parent_of}" 
-      if parent_of == pid
-        puts "PID is ok."
-        possible_pids.push(all_pids[0])
-      elsif
-        puts "The found referl instance was not started by process: #{pid}"
+      # CHECK IF THE PARENT PROCESS EVEN ALIVE
+      begin
+        Process.getpgid(pid)
+      rescue Errno::ESRCH
+        return false
       end
 
-    elsif all_pids.length > 1
-      puts "Multiple referl instance found"
-      all_pids.each do |x|
-        command = "ps -o ppid= -p #{x}"
+      all_pids = `pgrep -f "bin/referl"`.split("\n")
+      puts "Process found with 'referl': #{all_pids.length}"
+      exec_script_pid = `pgrep -f "referl_boot"`.split("\n")[0]
+      all_pids.delete(exec_script_pid)
+      puts "Process found with 'referl' –exec_script_pid: #{all_pids.length}"
+
+
+      possible_pids = []
+      if all_pids.length == 0
+        puts "No referl instance found!"
+        return false
+
+      elsif all_pids.length == 1
+        command = "ps -o ppid= -p #{all_pids[0]}"
         parent_of = Integer(shell_output(command))
-        puts "Current pid: #{x} => Parent is: #{parent_of}"
-        if Integer(parent_of) == pid
+        puts "Exactly one referl instance found: #{all_pids[0]} => Parent is: #{parent_of}" 
+        if parent_of == pid
           puts "PID is ok."
-          possible_pids.push(x)
+          possible_pids.push(all_pids[0])
+        elsif
+          puts "The found referl instance was not started by process: #{pid}"
+        end
+
+      elsif all_pids.length > 1
+        puts "Multiple referl instance found"
+        all_pids.each do |x|
+          command = "ps -o ppid= -p #{x}"
+          parent_of = Integer(shell_output(command))
+          puts "Current pid: #{x} => Parent is: #{parent_of}"
+          if Integer(parent_of) == pid
+            puts "PID is ok."
+            possible_pids.push(x)
+          end
         end
       end
-    end
 
 
-    if possible_pids.length == 1 
-      begin
-        Process.getpgid(Integer(possible_pids[0]))
-        puts "Found referl pid: #{possible_pids[0]} is alive."
-        return true 
-      rescue Errno::ESRCH
-        puts "Found referl pid: #{possible_pids[0]} is NOT alive."
+      if possible_pids.length == 1 
+        begin
+          Process.getpgid(Integer(possible_pids[0]))
+          puts "Found referl pid: #{possible_pids[0]} is alive."
+          return true 
+        rescue Errno::ESRCH
+          puts "Found referl pid: #{possible_pids[0]} is NOT alive."
+          return false
+      end
+      elsif possible_pids.length == 0
+        puts "No referl instance passed the previous validation process. (parental issues)"
         return false
+      else
+        puts "Multiple referl process were assosiated with this process, which shoudl not happen."
+      end
+
+      #system "kill", "ps -o pid= --ppid $$"
+
+    ensure
+      system "kill", "ps -o pid= --ppid #{pid}"
+      #pids_kill = shell_output("ps -o pid= --ppid $$")
+      #system "kill", "ps -o pid= --ppid $$"
     end
-    elsif possible_pids.length == 0
-      puts "No referl instance passed the previous validation process. (parental issues)"
-      return false
-    else
-      puts "Multiple referl process were assosiated with this process, which shoudl not happen."
-    end
+
   end
 
   test do
@@ -181,7 +186,9 @@ class Referl < Formula
     
 
 
-
+# Todo yaws csak így:
+# ri:start_web2([{yaws_path, "/usr/local/Cellar/yaws/2.0.9/lib/yaws-2.0.9/ebin"}]).
+# cmd-ból sem
 
     
 
@@ -219,7 +226,7 @@ class Referl < Formula
   
 
     
-    puts "ALL TESTS ARE PASSED."
+    ohai "ALL TESTS ARE PASSED."
     
   
   end
