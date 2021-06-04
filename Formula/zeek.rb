@@ -2,17 +2,16 @@ class Zeek < Formula
   desc "Network security monitor"
   homepage "https://www.zeek.org"
   url "https://github.com/zeek/zeek.git",
-      tag:      "v4.0.1",
-      revision: "54e03d7f0e06e40f3064107debf64769a6bd5216"
+      tag:      "v4.0.2",
+      revision: "b372622610a4d9fb96e94d8108f282a7f6865f86"
   license "BSD-3-Clause"
-  revision 1
   head "https://github.com/zeek/zeek.git"
 
   bottle do
-    sha256 arm64_big_sur: "5b712a190869ada5453212866807ec6a1b5a0c91c19c213ac7a24a6bec5e6033"
-    sha256 big_sur:       "705edae6b7613c46b0df237c42a6c0cb464b6576c2509a15c57014657bc9801b"
-    sha256 catalina:      "9e734d3833b090eae430a100d499e17f2450e5df714940c95e7fcb0ff04423d3"
-    sha256 mojave:        "2adf7c742f4f98b8187f746eba1d3af6a97b64ac568fb8467234be7d2e17bff5"
+    sha256 arm64_big_sur: "ba5ee9e2acf7dc41da3addadbdf3c2fdb201d012b2d45cb6d414cdf5bb78c962"
+    sha256 big_sur:       "3caa4e22a0983ce76fef62b2e0d2665691fd71a724192031eb0fc6c8c8c88555"
+    sha256 catalina:      "648345b2bb189c2609e8610e8f0a0eaea034cfdf88d078d228cb3d1934ac1c64"
+    sha256 mojave:        "2be006af7ccb9f98dfaf05915a93443e4f7f1f73baa0a26d85d29c70188bf131"
   end
 
   depends_on "bison" => :build
@@ -32,6 +31,8 @@ class Zeek < Formula
   def install
     # Remove SDK paths from zeek-config. This breaks usage with other SDKs.
     # https://github.com/corelight/zeek-community-id/issues/15
+    # Remove the `:` in each `inreplace` when this lands in a release:
+    # https://github.com/zeek/zeek/commit/ca725c1f9b96c8eb33885a29d24eefddf28e16ab
     inreplace "zeek-config.in" do |s|
       s.gsub! ":@ZEEK_CONFIG_PCAP_INCLUDE_DIR@", ""
       s.gsub! ":@ZEEK_CONFIG_ZLIB_INCLUDE_DIR@", ""

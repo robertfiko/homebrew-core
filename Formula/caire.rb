@@ -1,16 +1,16 @@
 class Caire < Formula
   desc "Content aware image resize tool"
   homepage "https://github.com/esimov/caire"
-  url "https://github.com/esimov/caire/archive/v1.3.1.tar.gz"
-  sha256 "8e9e1fbbfa0a2fd24280890ff1b5a48df487bdcba3445c50ff749235f569372f"
+  url "https://github.com/esimov/caire/archive/v1.3.2.tar.gz"
+  sha256 "fe759bbbf4ddb2a89d43ac99812f8a3027e2f84fc8f9771db88ac043cc41cbf7"
   license "MIT"
   head "https://github.com/esimov/caire.git"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_big_sur: "9c0ce2451e9cc12885d493f1a378ddf847c9110b46c50b78cffb1e3a573b2c62"
-    sha256 cellar: :any_skip_relocation, big_sur:       "ad8b6545e150fa79d11c5a3fc47d6babb6ffab6c60534cb2bf061c74c4ba1d51"
-    sha256 cellar: :any_skip_relocation, catalina:      "540d8b523e5863f41c8a3bf9aedf0fc5cea694d122a26f60729fa02fd42273ad"
-    sha256 cellar: :any_skip_relocation, mojave:        "dd5095e0999f730dc52cd15ad2eac292ad381d96c668c3a92ba3c84dde7c97cb"
+    sha256 cellar: :any_skip_relocation, arm64_big_sur: "99e369779abadd222e6d46031536c33f0097054633eae3e077f61eb5951a85cc"
+    sha256 cellar: :any_skip_relocation, big_sur:       "fc1c2ff0a4e00e2fc4005515bd2720ecdd2abba2c0e36a0f2396d52a0ff127aa"
+    sha256 cellar: :any_skip_relocation, catalina:      "869c6ff4fc5cabbc85b87f37afef6df1ea7fab98aaf98d779daf5e5c506b803f"
+    sha256 cellar: :any_skip_relocation, mojave:        "22072fce690001b8cb981244ce84ce0f1c0aba0323e372cb992a8bc0b067aafa"
   end
 
   depends_on "go" => :build
@@ -21,7 +21,7 @@ class Caire < Formula
 
   test do
     system bin/"caire", "-in", test_fixtures("test.png"), "-out", testpath/"test_out.png",
-           "-width=1", "-height=1", "-cc=data/facefinder", "-perc=1"
+           "-width=1", "-height=1", "-perc=1"
     assert_predicate testpath/"test_out.png", :exist?
   end
 end

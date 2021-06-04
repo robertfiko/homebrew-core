@@ -1,16 +1,16 @@
 class Nnn < Formula
   desc "Tiny, lightning fast, feature-packed file manager"
   homepage "https://github.com/jarun/nnn"
-  url "https://github.com/jarun/nnn/archive/v4.0.tar.gz"
-  sha256 "a219ec8fad3dd0512aadae5840176f3265188c4c22da3b17b133bac602b40754"
+  url "https://github.com/jarun/nnn/archive/v4.1.1.tar.gz"
+  sha256 "f0e02668da6324c12c39db35fe5c26bd45f3e02e5684a351b8ce8a357419ceba"
   license "BSD-2-Clause"
   head "https://github.com/jarun/nnn.git"
 
   bottle do
-    sha256 cellar: :any, arm64_big_sur: "3121884b9703f5bc511499904d0cd65c941ce22cb80eeb0a0c650e75de0788e3"
-    sha256 cellar: :any, big_sur:       "e6ab60e20d2ec6e9ce86c7774843141e19ac3f71fdb1022b9e8a9206ee2a8f3a"
-    sha256 cellar: :any, catalina:      "abd54ea24cb7ed46303b925f22466592c0ceaffbe8b8a8ec67ac6421c05bf64a"
-    sha256 cellar: :any, mojave:        "16a859bc4fafbf733092be7c8b03a738f165b358f87b1738dee7b349e2e1c47a"
+    sha256 cellar: :any, arm64_big_sur: "cb56c6154458ccdf3ae64561deceb4ed9bbcad6a4f3780ea3ced54c338e55208"
+    sha256 cellar: :any, big_sur:       "aa36cd7119f453030b9f22491161591d2829d84323b2c0b48a6943f43c696c1c"
+    sha256 cellar: :any, catalina:      "74b507cd2385f85cabaabb1f0bc552908266e6fe1b69053c38920ed173a8b86f"
+    sha256 cellar: :any, mojave:        "b9a20a6da7f9dcbaaa7605602df38df2d826d1118e01b9bdba40eccfa628900c"
   end
 
   depends_on "gnu-sed"

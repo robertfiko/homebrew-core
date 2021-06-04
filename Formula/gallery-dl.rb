@@ -3,23 +3,23 @@ class GalleryDl < Formula
 
   desc "Command-line downloader for image-hosting site galleries and collections"
   homepage "https://github.com/mikf/gallery-dl"
-  url "https://files.pythonhosted.org/packages/f3/2e/ea46f05d6ec24d3f707816691d2c4033a7ba8ff51e6e8cb250d094b83903/gallery_dl-1.17.4.tar.gz"
-  sha256 "4df80fd923b03b2413a3d1c50e32c3006d100ed5acc1400ace69d8dc2162d293"
+  url "https://files.pythonhosted.org/packages/61/8a/132e24edb05e62a7b55404591757338a59a6c48a36f1f114e84a8c45c898/gallery_dl-1.17.5.tar.gz"
+  sha256 "9d64bca2bf0cdecaff1336e0656917eb9028586fee4ac342761d6cb9a0cdb4f9"
   license "GPL-2.0-only"
   head "https://github.com/mikf/gallery-dl.git"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_big_sur: "669716170adf9af34f8570d2fc519ecc783917a846f1984b1de73e40a7fcd20c"
-    sha256 cellar: :any_skip_relocation, big_sur:       "87ecf882b67d8b50b12459c0175b2bb2a0a659e078c25386a2f456d6764f23f2"
-    sha256 cellar: :any_skip_relocation, catalina:      "87ecf882b67d8b50b12459c0175b2bb2a0a659e078c25386a2f456d6764f23f2"
-    sha256 cellar: :any_skip_relocation, mojave:        "87ecf882b67d8b50b12459c0175b2bb2a0a659e078c25386a2f456d6764f23f2"
+    sha256 cellar: :any_skip_relocation, arm64_big_sur: "052868cc5c07bc2df39cf8a2433540e0e30e8a583a14a51b6810ea959a69bcdb"
+    sha256 cellar: :any_skip_relocation, big_sur:       "c03820f7ce7ed37a309229f1ca22ae24dc8595762007c3640a793095e5ee692a"
+    sha256 cellar: :any_skip_relocation, catalina:      "c03820f7ce7ed37a309229f1ca22ae24dc8595762007c3640a793095e5ee692a"
+    sha256 cellar: :any_skip_relocation, mojave:        "c03820f7ce7ed37a309229f1ca22ae24dc8595762007c3640a793095e5ee692a"
   end
 
   depends_on "python@3.9"
 
   resource "certifi" do
-    url "https://files.pythonhosted.org/packages/06/a9/cd1fd8ee13f73a4d4f491ee219deeeae20afefa914dfb4c130cfc9dc397a/certifi-2020.12.5.tar.gz"
-    sha256 "1a4995114262bffbc2413b159f2a1a480c969de6e6eb13ee966d470af86af59c"
+    url "https://files.pythonhosted.org/packages/6d/78/f8db8d57f520a54f0b8a438319c342c61c22759d8f9a1cd2e2180b5e5ea9/certifi-2021.5.30.tar.gz"
+    sha256 "2bbf76fd432960138b3ef6dda3dde0544f27cbf8546c458e60baf371917ba9ee"
   end
 
   resource "chardet" do
@@ -38,8 +38,8 @@ class GalleryDl < Formula
   end
 
   resource "urllib3" do
-    url "https://files.pythonhosted.org/packages/cb/cf/871177f1fc795c6c10787bc0e1f27bb6cf7b81dbde399fd35860472cecbc/urllib3-1.26.4.tar.gz"
-    sha256 "e7b021f7241115872f92f43c6508082facffbd1c048e3c6e2bb9c2a157e28937"
+    url "https://files.pythonhosted.org/packages/94/40/c396b5b212533716949a4d295f91a4c100d51ba95ea9e2d96b6b0517e5a5/urllib3-1.26.5.tar.gz"
+    sha256 "a7acd0977125325f516bda9735fa7142b909a8d01e8b2e4c8108d0984e6e0098"
   end
 
   def install

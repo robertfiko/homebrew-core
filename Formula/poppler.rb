@@ -1,8 +1,8 @@
 class Poppler < Formula
   desc "PDF rendering library (based on the xpdf-3.0 code base)"
   homepage "https://poppler.freedesktop.org/"
-  url "https://poppler.freedesktop.org/poppler-21.05.0.tar.xz"
-  sha256 "dafd537b680fad1215bc40fc53d1f38e8449d7c185bc60d5a89e1d26c90dbd8c"
+  url "https://poppler.freedesktop.org/poppler-21.06.1.tar.xz"
+  sha256 "86b09e5a02de40081a3916ef8711c5128eaf4b1fc59d5f87d0ec66f04f595db4"
   license "GPL-2.0-only"
   head "https://gitlab.freedesktop.org/poppler/poppler.git"
 
@@ -12,10 +12,10 @@ class Poppler < Formula
   end
 
   bottle do
-    sha256 arm64_big_sur: "e1565e689fb5b431c5ac52bc30d31829f68c28cc9abf6fcb4655a7ef0cf94762"
-    sha256 big_sur:       "4c874d618149b062924bbbeabc4a6185dea6492422aad6e06945f3e9ac2a86a5"
-    sha256 catalina:      "5c8d53c34f80b8521353f2200469ee6160b12033e9546bd9b2e7477c3c151983"
-    sha256 mojave:        "5fd0d83811b471e4580939714d707ff18fef4174028ce32ee8cc282308f93204"
+    sha256 arm64_big_sur: "aaff85fe2abc31c6a6607acd0c1a4b06942f0d5e6be11f18c98c457ca75e9d62"
+    sha256 big_sur:       "c7ce27dd122ef1757adfa047648bb359c7da830c7c55ce3008638605157bfdae"
+    sha256 catalina:      "34c5d4fbb39da3ebf8a5fdc557812150a5e94d5fa25ff44898df3238f5d5686f"
+    sha256 mojave:        "34a03d61112039f6fc2d89bcf003badf902795f26c2535bf96dd3b8dc9a9a12b"
   end
 
   depends_on "cmake" => :build
@@ -50,6 +50,7 @@ class Poppler < Formula
 
     args = std_cmake_args + %w[
       -DBUILD_GTK_TESTS=OFF
+      -DENABLE_BOOST=OFF
       -DENABLE_CMS=lcms2
       -DENABLE_GLIB=ON
       -DENABLE_QT5=ON

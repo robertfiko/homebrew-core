@@ -3,22 +3,22 @@ class Twarc < Formula
 
   desc "Command-line tool and Python library for archiving Twitter JSON"
   homepage "https://github.com/DocNow/twarc"
-  url "https://files.pythonhosted.org/packages/02/b3/2e26ff6fe16c5a6736726a887b80d100d41766b841c302900d30eadc438e/twarc-2.0.13.tar.gz"
-  sha256 "46ae0340233b8fc2720812ef0b9e4923609668fb28c286efe8f3a91ea5ed7b94"
+  url "https://files.pythonhosted.org/packages/f0/e7/41a880e9e30533941a6c001cdcfd5f6b7700015a41e691cb96456d35e8a8/twarc-2.1.2.tar.gz"
+  sha256 "e39d04743c8c1c58457e23e9c6c41f1b1f7282f2915f25f6594719e262ed9223"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_big_sur: "0c340afb350f82993f9d5bdb59c0387cc916ad0459e231c775cecf2ac521cfff"
-    sha256 cellar: :any_skip_relocation, big_sur:       "8d24014f4d2e82f77f937941f462e7502e3b59cd6b1555cbfefdaa242a587dc3"
-    sha256 cellar: :any_skip_relocation, catalina:      "285fbf37c3f0d649644539f0f9ad648913b8a75d92898b806b61f01f97f99133"
-    sha256 cellar: :any_skip_relocation, mojave:        "c411338960cf19b7a8d0151310e9eb67a24b37d79e64fa181266296e33c28a48"
+    sha256 cellar: :any_skip_relocation, arm64_big_sur: "e2c05da4d9235ddb1f08f6c9a00436c9f2a7ded2c4e84eff72cd396dc33a5da3"
+    sha256 cellar: :any_skip_relocation, big_sur:       "e8cf3e97b78953ad98c566095caecc86c25ad0caf7f134cb5f0be7a920115bb6"
+    sha256 cellar: :any_skip_relocation, catalina:      "5063577224f587b1830c0bcca323150ed8a44f0b4b0e1a5c8e9837170a160b24"
+    sha256 cellar: :any_skip_relocation, mojave:        "987822257fc6791820843e202c7e0df7461ab959b49b85dff1c74736aa1e28e8"
   end
 
   depends_on "python@3.9"
 
   resource "certifi" do
-    url "https://files.pythonhosted.org/packages/06/a9/cd1fd8ee13f73a4d4f491ee219deeeae20afefa914dfb4c130cfc9dc397a/certifi-2020.12.5.tar.gz"
-    sha256 "1a4995114262bffbc2413b159f2a1a480c969de6e6eb13ee966d470af86af59c"
+    url "https://files.pythonhosted.org/packages/6d/78/f8db8d57f520a54f0b8a438319c342c61c22759d8f9a1cd2e2180b5e5ea9/certifi-2021.5.30.tar.gz"
+    sha256 "2bbf76fd432960138b3ef6dda3dde0544f27cbf8546c458e60baf371917ba9ee"
   end
 
   resource "chardet" do
@@ -52,8 +52,8 @@ class Twarc < Formula
   end
 
   resource "oauthlib" do
-    url "https://files.pythonhosted.org/packages/fc/c7/829c73c64d3749da7811c06319458e47f3461944da9d98bb4df1cb1598c2/oauthlib-3.1.0.tar.gz"
-    sha256 "bee41cc35fcca6e988463cacc3bcb8a96224f470ca547e697b604cc697b2f889"
+    url "https://files.pythonhosted.org/packages/9e/84/001a3f8d9680f3b26d5e7711e13d5ff92e4b511766a72ac6b4a4e5f06796/oauthlib-3.1.1.tar.gz"
+    sha256 "8f0215fcc533dd8dd1bee6f4c412d4f0cd7297307d43ac61666389e3bc3198a3"
   end
 
   resource "python-dateutil" do
@@ -77,8 +77,8 @@ class Twarc < Formula
   end
 
   resource "urllib3" do
-    url "https://files.pythonhosted.org/packages/cb/cf/871177f1fc795c6c10787bc0e1f27bb6cf7b81dbde399fd35860472cecbc/urllib3-1.26.4.tar.gz"
-    sha256 "e7b021f7241115872f92f43c6508082facffbd1c048e3c6e2bb9c2a157e28937"
+    url "https://files.pythonhosted.org/packages/94/40/c396b5b212533716949a4d295f91a4c100d51ba95ea9e2d96b6b0517e5a5/urllib3-1.26.5.tar.gz"
+    sha256 "a7acd0977125325f516bda9735fa7142b909a8d01e8b2e4c8108d0984e6e0098"
   end
 
   def install

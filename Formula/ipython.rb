@@ -3,16 +3,16 @@ class Ipython < Formula
 
   desc "Interactive computing in Python"
   homepage "https://ipython.org/"
-  url "https://files.pythonhosted.org/packages/6d/45/2e3faec0b406a1ee43ea363bec8ce1d629c8e5be9e988e31290a983ce211/ipython-7.24.0.tar.gz"
-  sha256 "a171caa3d3d4c819a1c0742e3abecfd5a2b8ab525ca1c9f114b40b76b0679ab1"
+  url "https://files.pythonhosted.org/packages/59/4a/06f4527f0b47d80f0f86c17e14ee0bf0fedd7028a63a4f81c314f53c6636/ipython-7.24.1.tar.gz"
+  sha256 "9bc24a99f5d19721fb8a2d1408908e9c0520a17fff2233ffe82620847f17f1b6"
   license "BSD-3-Clause"
   head "https://github.com/ipython/ipython.git"
 
   bottle do
-    sha256 cellar: :any, arm64_big_sur: "e54768bff2b9ce0fd2c3f77b38fe6b7b1784470cfaa2c1e1af644f33c98c40e4"
-    sha256 cellar: :any, big_sur:       "77f4338d39c9aa4c94304c9972570c794e210db96a52c97803eba4565503fb56"
-    sha256 cellar: :any, catalina:      "1590078ca6795230a6275be0c8a36a115261f3275ced9803c17120a8c27bd974"
-    sha256 cellar: :any, mojave:        "b46b43594cedb95a32e860728c08c66f738d88dfd46a20b6fd0dc1ca44cad626"
+    sha256 cellar: :any, arm64_big_sur: "e191f71469af937d456af527b67d7bfed0ad2276d06d18c502cde92c72579b77"
+    sha256 cellar: :any, big_sur:       "4dd869fd620c5aba119a0aadc87fbd9064bf09f27dd8d0ed55555c51f7347d9d"
+    sha256 cellar: :any, catalina:      "de64e19bd947525bac4051ae3eea11f6401345e322390cc0f51f0618a8b7c477"
+    sha256 cellar: :any, mojave:        "390c1159a4fc90429887be58020d114bedd179d6840a228e156ac35bf9952743"
   end
 
   depends_on "python@3.9"

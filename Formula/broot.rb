@@ -1,16 +1,16 @@
 class Broot < Formula
   desc "New way to see and navigate directory trees"
   homepage "https://dystroy.org/broot/"
-  url "https://github.com/Canop/broot/archive/v1.4.0.tar.gz"
-  sha256 "410c948b5a45796238efacac857a74594511e24615399e604795d17efbda0461"
+  url "https://github.com/Canop/broot/archive/v1.5.1.tar.gz"
+  sha256 "af7467aa4331dab9a556ff1b6c265eaa6b526a85ebc1f499d091cb719e1db364"
   license "MIT"
   head "https://github.com/Canop/broot.git"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_big_sur: "ea02f6ccb6e1680d24003fbea5c701f600c161dd726f7c0b9f4f75e1e9e4ceb1"
-    sha256 cellar: :any_skip_relocation, big_sur:       "723b5d1d13a005de6e45a9753541a3da10f6e068261274ac917d7bc1353fd399"
-    sha256 cellar: :any_skip_relocation, catalina:      "3baf8b2baa2fea41638564bf9c3c0f3bc710ca696af5d7b7c0274898d10a1897"
-    sha256 cellar: :any_skip_relocation, mojave:        "e819f775427920dc03495990a1c052ef600ef498d9e72edba9b777e7f084dbbe"
+    sha256 cellar: :any_skip_relocation, arm64_big_sur: "e90fb2484ba9bc08c8b498174d1c45f0a06b055529ba02bdf887ce5a3881e94b"
+    sha256 cellar: :any_skip_relocation, big_sur:       "99611d7a69c70303626e745d02b2ddc83580393db3f8eb318656108a1868df89"
+    sha256 cellar: :any_skip_relocation, catalina:      "bb0b419627ff9d746fad37e98f1ad4b25d3da7d68009d9d985e6b6188d5e2e7d"
+    sha256 cellar: :any_skip_relocation, mojave:        "7da96ac53fa9c2ae7fa92a57e70f22f552759d469785b836cf8025c22c1229f7"
   end
 
   depends_on "rust" => :build

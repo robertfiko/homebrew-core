@@ -4,21 +4,21 @@ class Rust < Formula
   license any_of: ["Apache-2.0", "MIT"]
 
   stable do
-    url "https://static.rust-lang.org/dist/rustc-1.51.0-src.tar.gz"
-    sha256 "7a6b9bafc8b3d81bbc566e7c0d1f17c9f499fd22b95142f7ea3a8e4d1f9eb847"
+    url "https://static.rust-lang.org/dist/rustc-1.52.1-src.tar.gz"
+    sha256 "3a6f23a26d0e8f87abbfbf32c5cd7daa0c0b71d0986abefc56b9a5fbfbd0bf98"
 
     resource "cargo" do
       url "https://github.com/rust-lang/cargo.git",
-          tag:      "0.52.0",
-          revision: "43b129a20fbf1ede0df411396ccf0c024bf34134"
+          tag:      "0.53.0",
+          revision: "69767412acbf7f64773427b1fb53e45296712c3c"
     end
   end
 
   bottle do
-    sha256 cellar: :any, arm64_big_sur: "194906f669b54ba323143a02595dbdec6788236b52099e4145e4fac2340c27ce"
-    sha256 cellar: :any, big_sur:       "f792ca45d01d474f51a4b2261713aa36d55a9b0ce60329d5a563f9a761f26dd8"
-    sha256 cellar: :any, catalina:      "680b81ddcee5049e511b1d5b5da7e8be74df351de96317d033f81c01ab7858cb"
-    sha256 cellar: :any, mojave:        "d33f8c8aac0b0d6e3527048fd7f687074046d5ce2d5f84af4c741af5e601e517"
+    sha256 cellar: :any, arm64_big_sur: "47225bcea0cee3fdde165f92e8db8e3862a2ea2be584714ffbc7223cc553696d"
+    sha256 cellar: :any, big_sur:       "d5d58fa69604a8fa9118677f51c84fc34c2f0da80361b32cc00c80f864087609"
+    sha256 cellar: :any, catalina:      "68f71286e9087960f23f172072edbee80db7d0e566eeb05cdc456a9862778b18"
+    sha256 cellar: :any, mojave:        "17e87ad3d2be474d472243c08868ee9e36df5cb1688255d4a11337399aec132d"
   end
 
   head do
@@ -43,18 +43,18 @@ class Rust < Formula
     on_macos do
       # From https://github.com/rust-lang/rust/blob/#{version}/src/stage0.txt
       if Hardware::CPU.arm?
-        url "https://static.rust-lang.org/dist/2021-02-11/cargo-1.50.0-aarch64-apple-darwin.tar.gz"
-        sha256 "19d526ef3518fb0322f809deddbd4208a27d08efa41d2188348f1be8d3bcfe5e"
+        url "https://static.rust-lang.org/dist/2021-03-25/cargo-1.51.0-aarch64-apple-darwin.tar.gz"
+        sha256 "3eb0eb6192635c4b844deb97004a7e38a631bb4507b1284c055df8533c00e77a"
       else
-        url "https://static.rust-lang.org/dist/2021-02-11/cargo-1.50.0-x86_64-apple-darwin.tar.gz"
-        sha256 "45640bb1cef40f25ecb4bd2a3bb34fdf884c418e625d4f9c9595d2aca84fad78"
+        url "https://static.rust-lang.org/dist/2021-03-25/cargo-1.51.0-x86_64-apple-darwin.tar.gz"
+        sha256 "37eb709e5ed8fe02d2c8d89bc0be3dc1d642cff223c25df311ff5a82eab53d4b"
       end
     end
 
     on_linux do
       # From: https://github.com/rust-lang/rust/blob/#{version}/src/stage0.txt
-      url "https://static.rust-lang.org/dist/2021-02-11/cargo-1.50.0-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "3456cfd9be761907a4d3aae475bd79d93662b7aee4541f28df3d1f7c7d71a034"
+      url "https://static.rust-lang.org/dist/2021-03-25/cargo-1.51.0-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "fe8abe2c2b467ac5f5021ff8020eda70de9e9f8f45b4a2e834afbd3b78323a31"
     end
   end
 
@@ -63,18 +63,11 @@ class Rust < Formula
 
     # Fix build failure for compiler_builtins "error: invalid deployment target
     # for -stdlib=libc++ (requires OS X 10.7 or later)"
-    ENV["MACOSX_DEPLOYMENT_TARGET"] = MacOS.version
+    on_macos { ENV["MACOSX_DEPLOYMENT_TARGET"] = MacOS.version }
 
     # Ensure that the `openssl` crate picks up the intended library.
     # https://crates.io/crates/openssl#manual-configuration
     ENV["OPENSSL_DIR"] = Formula["openssl@1.1"].opt_prefix
-
-    # Fix build failure for cmake v0.1.24 "error: internal compiler error:
-    # src/librustc/ty/subst.rs:127: impossible case reached" on 10.11, and for
-    # libgit2-sys-0.6.12 "fatal error: 'os/availability.h' file not found
-    # #include <os/availability.h>" on 10.11 and "SecTrust.h:170:67: error:
-    # expected ';' after top level declarator" among other errors on 10.12
-    ENV["SDKROOT"] = MacOS.sdk_path
 
     args = ["--prefix=#{prefix}"]
     if build.head?

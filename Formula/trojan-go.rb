@@ -2,28 +2,28 @@ class TrojanGo < Formula
   desc "Trojan proxy in Go"
   homepage "https://p4gefau1t.github.io/trojan-go/"
   url "https://github.com/p4gefau1t/trojan-go.git",
-      tag:      "v0.10.3",
-      revision: "15817b5060ffc6284d9ba3a3defe99614a426d57"
+      tag:      "v0.10.4",
+      revision: "068d23371c2676212a3399edbabfb2aaedf63750"
   license "GPL-3.0-only"
   head "https://github.com/p4gefau1t/trojan-go.git"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_big_sur: "2bcb4a2ce8e5661549053f49ad96d87c157d444c8febe821541a67ff3412f7ef"
-    sha256 cellar: :any_skip_relocation, big_sur:       "9089e1d015be31505b643d22cdac454fdf7d5cbeee68b2b9782bd5e965ed2bbb"
-    sha256 cellar: :any_skip_relocation, catalina:      "73aaf2067279c362dae17beb8ee33278f233bec8913fcffc561ad116e82e4995"
-    sha256 cellar: :any_skip_relocation, mojave:        "0af91fae6bed5c87e4f772c788dd3bcd81587d057bc0f6bb428f6ce694a3cc78"
+    sha256 cellar: :any_skip_relocation, arm64_big_sur: "ab04942c62290d5d9a31fb4b8effe4faaec41cfeb1e2488182a81cb3f7b2ade1"
+    sha256 cellar: :any_skip_relocation, big_sur:       "35b6d8e1dfa0b8b7ad6e34c7c7b8a2afd7354734dfabfd5ce4469a258ff23cc5"
+    sha256 cellar: :any_skip_relocation, catalina:      "bdde15ba8bda689976496f1609c23f262d60a97ea83dbea54633e4900e6005db"
+    sha256 cellar: :any_skip_relocation, mojave:        "78eaa763a2eaedcf0521a4b32d51ea179f5e89d6413a6db3b74a659488e60d54"
   end
 
   depends_on "go" => :build
 
   resource "geoip" do
-    url "https://github.com/v2fly/geoip/releases/download/202105270041/geoip.dat"
-    sha256 "a5f1cec9c252197a07a4b7b7e89da08dec65692715beb5ecad1106c2dea3c73c"
+    url "https://github.com/v2fly/geoip/releases/download/202106030115/geoip.dat"
+    sha256 "acf231d7c6461d088ae479fe0c1cb143b5ee3cf7048a897c5a9b7807ab7005df"
   end
 
   resource "geosite" do
-    url "https://github.com/v2fly/domain-list-community/releases/download/20210530205623/dlc.dat"
-    sha256 "5064df9aee2056cce8c63dc5ec005f9e6b9487fc1227ab7250c4c84bf26cb26a"
+    url "https://github.com/v2fly/domain-list-community/releases/download/20210531212831/dlc.dat"
+    sha256 "332bbe53af49582dbf89bda04ee5e60e474f9293fc368ab55b517fdcd4a78ed2"
   end
 
   def install

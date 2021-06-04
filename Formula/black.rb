@@ -3,8 +3,8 @@ class Black < Formula
 
   desc "Python code formatter"
   homepage "https://black.readthedocs.io/en/stable/"
-  url "https://files.pythonhosted.org/packages/83/e5/81da40cfcdf90a797a4fa3f809a612ee3646e2d3bd6afbb76068be82e4f4/black-21.5b1.tar.gz"
-  sha256 "23695358dbcb3deafe7f0a3ad89feee5999a46be5fec21f4f1d108be0bcdb3b1"
+  url "https://files.pythonhosted.org/packages/b3/d6/d1aa2fdb633d092cf43ec4c96b0035a0a3a4f579b691205f96ccbd4e0032/black-21.5b2.tar.gz"
+  sha256 "1fc0e0a2c8ae7d269dfcf0c60a89afa299664f3e811395d40b1922dff8f854b5"
   license "MIT"
 
   livecheck do
@@ -13,10 +13,10 @@ class Black < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_big_sur: "97c6f0771c713d17d9af352e2dd1c7f578913b18977bff5786a5ab72a447c367"
-    sha256 cellar: :any_skip_relocation, big_sur:       "4706b89c3450450c348aa5979cb7ba16d08cb40021d760b4e729af3ae4f7c9ef"
-    sha256 cellar: :any_skip_relocation, catalina:      "6e93bec61ed352cd57aa41b8a01ed216efd7849dd4823cb5293d6b5d87f5ea45"
-    sha256 cellar: :any_skip_relocation, mojave:        "851558b4fbe8aa8a6768be860c911ff933159936115b12eeafedfce959d8e471"
+    sha256 cellar: :any_skip_relocation, arm64_big_sur: "3e24da14845c2704fa37262906e62a9121ead3ef26d9534e14fce67526ddeb86"
+    sha256 cellar: :any_skip_relocation, big_sur:       "e562a03862e88ef6764ab690f9540f26f59511a4ae259e65bde6b73e87b7fbb0"
+    sha256 cellar: :any_skip_relocation, catalina:      "fd335c3d8e9e8fe9b10bcd5c8e01ca385c91de8ef7486de1af9420a8969f1e5a"
+    sha256 cellar: :any_skip_relocation, mojave:        "d156e1da447145bcce69d80bd7e6cc0379e0d6bdfe14000c2fff3bce404d6ac5"
   end
 
   depends_on "python@3.9"
@@ -52,13 +52,13 @@ class Black < Formula
   end
 
   resource "click" do
-    url "https://files.pythonhosted.org/packages/27/6f/be940c8b1f1d69daceeb0032fee6c34d7bd70e3e649ccac0951500b4720e/click-7.1.2.tar.gz"
-    sha256 "d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a"
+    url "https://files.pythonhosted.org/packages/21/83/308a74ca1104fe1e3197d31693a7a2db67c2d4e668f20f43a2fca491f9f7/click-8.0.1.tar.gz"
+    sha256 "8c04c11192119b1ef78ea049e0a6f0463e4c48ef00a30160c704337586f3ad7a"
   end
 
   resource "idna" do
-    url "https://files.pythonhosted.org/packages/9f/24/1444ee2c9aee531783c031072a273182109c6800320868ab87675d147a05/idna-3.1.tar.gz"
-    sha256 "c5b02147e01ea9920e6b0a3f1f7bb833612d507592c837a6c49552768f4054e1"
+    url "https://files.pythonhosted.org/packages/cb/38/4c4d00ddfa48abe616d7e572e02a04273603db446975ab46bbcd36552005/idna-3.2.tar.gz"
+    sha256 "467fbad99067910785144ce333826c71fb0e63a425657295239737f7ecd125f3"
   end
 
   resource "multidict" do
