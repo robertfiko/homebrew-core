@@ -1,0 +1,3 @@
+[{env,appbase,"/usr/local/Cellar/erlang/24.0.2/lib/erlang/lib"},
+ {env,output,original},
+ {env,db_posmode,abs}].

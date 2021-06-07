@@ -1,0 +1,11 @@
+
+=INFO REPORT==== 7-Jun-2021::12:24:25 ===
+Yaws: Listening to 127.0.0.1:8001 for <1> virtual servers:
+ - http://localhost:8001 under /usr/local/Cellar/referl/0.9.20.08/lib/referl_ui/web2/app
+
+=INFO REPORT==== 7-Jun-2021::12:29:18 ===
+stop_ready([], <0.600.0>)
+
+=INFO REPORT==== 7-Jun-2021::12:32:24 ===
+Yaws: Listening to 0.0.0.0:8001 for <1> virtual servers:
+ - http://localhost:8001 under /usr/local/Cellar/referl/0.9.20.08/lib/referl_ui/web2/app
