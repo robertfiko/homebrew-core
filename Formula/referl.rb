@@ -19,7 +19,6 @@ class Referl < Formula
   depends_on "graphviz"
   depends_on "yaws"
 
-  # Creating exec script
   def create_exec_script
     out_file = File.new("bin/referl_exec", "w")
     out_file.puts("#\!\/bin\/bash")
@@ -73,34 +72,43 @@ class Referl < Formula
     instal_referl
   end
 
-  def test_referl_badarg
-    puts "=== Test Case: Bad Arg ======================================"
-    pid = fork do
-      exec "referl -badarg"
+  def check_and_del_data
+    if File.directory? "data"
+      if `ls data`.include? "refactorerl.configuration_mnesia"
+        `rm -r data`
+      end
     end
-    sleep 1
+    #! TODO: Ez így rm?
+  end
+
+  def kill_erts(exec_script_pid)
+    erts_pids = `pgrep -f "erlang/erts"`.split("\n")
+    erts_pids.each do |p|
+      parent_of = Integer(`ps -o ppid= -p #{p}`)
+      puts "CHECK ERTS pid: #{p}, which is child of: #{parent_of} || exec pid: #{exec_script_pid}"
+      if Integer(parent_of) == Integer(exec_script_pid)
+        puts "Killing ERTS pid: #{p}, which is child of: #{parent_of} (exec script)"
+        system "kill", p
+      end
+    end
+  end
+
+  def test_referl_with_params(params, name)
+    puts "=== Test Case: #{name} ====================================="
+    check_and_del_data
+    pid = fork do
+      system "referl", params
+    end
+    puts "Forked pid: #{pid}"
+    sleep 1 # TODO: Must??
+
+    # CHECK IF THE PARENT PROCESS EVEN ALIVE
     begin
       Process.getpgid(pid)
-      true
     rescue Errno::ESRCH
+      puts "No pid!"
       false
     end
-  end
-
-  def test_referl_start_no_arg
-    pid = fork do
-      system "referl"
-    end
-    puts "=== Test Case: No arg ====================================="
-    puts "Forked pid: #{pid}"
-    sleep 1
-
-    # CHECK IF THE PARENT PROCESS EVEN ALIVE
-    begin
-      Process.getpgid(pid)
-    rescue Errno::ESRCH
-      return false
-    end
 
     all_pids = `pgrep -f "bin/referl"`.split("\n")
     exec_script_pid = `pgrep -f "referl_boot"`.split("\n")[0]
@@ -112,8 +120,7 @@ class Referl < Formula
       return false
 
     elsif all_pids.length == 1
-      command = "ps -o ppid= -p #{all_pids[0]}"
-      parent_of = Integer(shell_output(command))
+      parent_of = Integer(`ps -o ppid= -p #{all_pids[0]}`)
       puts "Exactly one referl instance found: #{all_pids[0]} => Parent is: #{parent_of}"
       if parent_of == pid
         puts "PID is ok."
@@ -125,8 +132,7 @@ class Referl < Formula
     elsif all_pids.length > 1
       puts "Multiple referl instance found"
       all_pids.each do |x|
-        command = "ps -o ppid= -p #{x}"
-        parent_of = Integer(shell_output(command))
+        parent_of = Integer(`ps -o ppid= -p #{all_pids[0]}`)
         puts "Current pid: #{x} => Parent is: #{parent_of}"
         if Integer(parent_of) == pid
           puts "PID is ok."
@@ -148,32 +154,35 @@ class Referl < Formula
       puts "No/Multiple referl proc. were found with this proc. Count: #{possible_pids.length}"
     end
 
-    sleep 1
-    erts_pids = `pgrep -f "erlang/erts"`.split("\n")
-    erts_pids.each do |p|
-      parent_of = Integer(shell_output("ps -o ppid= -p #{p}"))
-      if Integer(parent_of) == Integer(exec_script_pid)
-        puts "Killing ERTS pid: #{p}, which is child of: #{parent_of} (exec script)"
-        system "kill", p
-      end
-    end
+    sleep 1  # TODO: MUST -> wait for the other erts pids to finish?? maybe
+    kill_erts exec_script_pid
+    Process.waitpid(pid, 0)
+    
     success
   end
 
-  def test_referl_start_name
-    pid = fork do
-      system "referl", "-name", "test@localhost"
+  def test_referl_with_yaws
+    puts "=== Test Case: YAWS ====================================="
+    if ! `curl --silent localhost:8001`.include? "<title>RefactorErl</title>"
+      puts "Yaws is not running on localhost:8001, with RefactorErl"
     end
-    puts "=== Test Case: Name arg ====================================="
+
+    check_and_del_data
+    yaws_path = yaws_detect
+    pid = fork do
+      system "referl", "-yaws_path", yaws_path, "-web2"
+    end
     puts "Forked pid: #{pid}"
-    sleep 1
+    sleep 1 # TODO: Must
 
     # CHECK IF THE PARENT PROCESS EVEN ALIVE
     begin
       Process.getpgid(pid)
     rescue Errno::ESRCH
-      return false
+      puts "No pid!"
+      false
     end
+
 
     all_pids = `pgrep -f "bin/referl"`.split("\n")
     exec_script_pid = `pgrep -f "referl_boot"`.split("\n")[0]
@@ -185,8 +194,7 @@ class Referl < Formula
       return false
 
     elsif all_pids.length == 1
-      command = "ps -o ppid= -p #{all_pids[0]}"
-      parent_of = Integer(shell_output(command))
+      parent_of = Integer(`ps -o ppid= -p #{all_pids[0]}`)
       puts "Exactly one referl instance found: #{all_pids[0]} => Parent is: #{parent_of}"
       if parent_of == pid
         puts "PID is ok."
@@ -198,8 +206,7 @@ class Referl < Formula
     elsif all_pids.length > 1
       puts "Multiple referl instance found"
       all_pids.each do |x|
-        command = "ps -o ppid= -p #{x}"
-        parent_of = Integer(shell_output(command))
+        parent_of = Integer(`ps -o ppid= -p #{all_pids[0]}`)
         puts "Current pid: #{x} => Parent is: #{parent_of}"
         if Integer(parent_of) == pid
           puts "PID is ok."
@@ -207,7 +214,7 @@ class Referl < Formula
         end
       end
     end
-
+    
     success = false
     if possible_pids.length == 1
       begin
@@ -221,37 +228,44 @@ class Referl < Formula
       puts "No/Multiple referl proc. were found with this proc. Count: #{possible_pids.length}"
     end
 
-    sleep 1
-    erts_pids = `pgrep -f "erlang/erts"`.split("\n")
-    erts_pids.each do |p|
-      parent_of = Integer(shell_output("ps -o ppid= -p #{p}"))
-      if Integer(parent_of) == Integer(exec_script_pid)
-        puts "Killing ERTS pid: #{p}, which is child of: #{parent_of} (exec script)"
-        system "kill", p
-      end
+    sleep 3 # TODO: It is must, to give time to YAWS to stand
+    if ! (`curl --silent localhost:8001`.include? "<title>RefactorErl</title>")
+      puts "That it is not our YAWS."
+      success = false
     end
+    
+    sleep 1 # TODO: MUST ???
+    kill_erts exec_script_pid
+    Process.waitpid(pid, 0)
+    
     success
   end
+
 
   test do
     # Test Case #1 - Starting referl with bad arguments => should fail
-    assert_equal(false, test_referl_badarg)
+    assert_equal(false, test_referl_with_params("-badparam", "Bad Parameter"))
 
-    # Test Case - Starting referl with no arguments
-    #assert_equal(true, test_referl_start_no_arg)
+    # Test Case #2 - Starting referl with no arguments
+    assert_equal(true, test_referl_with_params("", "NO ARGS"))
 
-    # Test Case #2 - Starting referl with only -name test@localhost arguments
-    #assert_equal(true, test_referl_start_name)
+    # Test Case #3 - Starting referl with only -name test@localhost arguments
+    assert_equal(true, test_referl_with_params("-name test@localhost", "-NAME"))
 
-    # Test Case #5 - Starting referl with: -db kcmini
-    # referl -db kcmini -sname robi
+    # Test Case #4 - Starting referl with: -db kcmini and -sname
+    assert_equal(true, test_referl_with_params("-db kcmini -sname elte", "KCMINI & SNAME"))
 
-    # Test Case #6 - Testing with YAWS
+    # Test Case #5 - Testing with YAWS
+    assert_equal(true, test_referl_with_yaws)
 
+    # ? Észrevételek
     # Todo yaws csak igy:
     # ri:start_web2([{yaws_path, "/usr/local/Cellar/yaws/2.0.9/lib/yaws-2.0.9/ebin"}]).
-    # cmd-bol sem
+    # CMD-ben is meg kell adni a yawspath-ot. akkor miért adom meg telepítésnél?
 
-    ohai "ALL TESTS ARE PASSED."
+    # git push https://github.com/robertfiko/homebrew-core/ referl
+
+
+    ohai " ✅ ALL TESTS ARE PASSED. ✅"
   end
 end
