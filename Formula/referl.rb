@@ -72,15 +72,6 @@ class Referl < Formula
     instal_referl
   end
 
-  def check_and_del_data
-    if File.directory? "data"
-      if `ls data`.include? "refactorerl.configuration_mnesia"
-        `rm -r data`
-      end
-    end
-    #! TODO: Ez így rm?
-  end
-
   def kill_erts(exec_script_pid)
     erts_pids = `pgrep -f "erlang/erts"`.split("\n")
     erts_pids.each do |p|
@@ -93,14 +84,31 @@ class Referl < Formula
     end
   end
 
+  def wait_for_pid(pid)
+    counter = 0
+    while counter < 5 do
+      sleep 1
+      puts "Sleep #{counter}"
+      begin
+        Process.getpgid(pid)
+        counter = 5
+      rescue Errno::ESRCH
+        counter = counter + 1
+      end
+    end
+  end
+
+
+  #def wait_for
+
   def test_referl_with_params(params, name)
+    data_dir = "/tmp/referl_data#{Time.now.to_i}"
     puts "=== Test Case: #{name} ====================================="
-    check_and_del_data
     pid = fork do
-      system "referl", params
+      system "referl", "-dir", data_dir, params
     end
     puts "Forked pid: #{pid}"
-    sleep 1 # TODO: Must??
+    wait_for_pid(pid)
 
     # CHECK IF THE PARENT PROCESS EVEN ALIVE
     begin
@@ -158,6 +166,7 @@ class Referl < Formula
     kill_erts exec_script_pid
     Process.waitpid(pid, 0)
     
+    `rm -r #{data_dir}`
     success
   end
 
@@ -167,10 +176,10 @@ class Referl < Formula
       puts "Yaws is not running on localhost:8001, with RefactorErl"
     end
 
-    check_and_del_data
+    data_dir = "/tmp/referl_data#{Time.now.to_i}"
     yaws_path = yaws_detect
     pid = fork do
-      system "referl", "-yaws_path", yaws_path, "-web2"
+      system "referl", "-dir", data_dir, "-yaws_path", yaws_path, "-web2"
     end
     puts "Forked pid: #{pid}"
     sleep 1 # TODO: Must
@@ -214,7 +223,7 @@ class Referl < Formula
         end
       end
     end
-    
+
     success = false
     if possible_pids.length == 1
       begin
@@ -232,12 +241,15 @@ class Referl < Formula
     if ! (`curl --silent localhost:8001`.include? "<title>RefactorErl</title>")
       puts "That it is not our YAWS."
       success = false
+    elsif
+      puts "This is our YAWS"
     end
     
     sleep 1 # TODO: MUST ???
     kill_erts exec_script_pid
     Process.waitpid(pid, 0)
     
+    `rm -r #{data_dir}`
     success
   end
 
@@ -261,7 +273,6 @@ class Referl < Formula
     # ? Észrevételek
     # Todo yaws csak igy:
     # ri:start_web2([{yaws_path, "/usr/local/Cellar/yaws/2.0.9/lib/yaws-2.0.9/ebin"}]).
-    # CMD-ben is meg kell adni a yawspath-ot. akkor miért adom meg telepítésnél?
 
     # git push https://github.com/robertfiko/homebrew-core/ referl
 
