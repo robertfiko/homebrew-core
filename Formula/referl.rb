@@ -86,20 +86,17 @@ class Referl < Formula
 
   def wait_for_pid(pid)
     counter = 0
-    while counter < 5 do
+    while counter < 5
       sleep 1
       puts "Sleep #{counter}"
       begin
         Process.getpgid(pid)
         counter = 5
       rescue Errno::ESRCH
-        counter = counter + 1
+        counter += 1
       end
     end
   end
-
-
-  #def wait_for
 
   def test_referl_with_params(params, name)
     data_dir = "/tmp/referl_data#{Time.now.to_i}"
@@ -162,17 +159,17 @@ class Referl < Formula
       puts "No/Multiple referl proc. were found with this proc. Count: #{possible_pids.length}"
     end
 
-    sleep 1  # TODO: MUST -> wait for the other erts pids to finish?? maybe
+    wait_for_pid(pid)
     kill_erts exec_script_pid
     Process.waitpid(pid, 0)
-    
+
     `rm -r #{data_dir}`
     success
   end
 
   def test_referl_with_yaws
     puts "=== Test Case: YAWS ====================================="
-    if ! `curl --silent localhost:8001`.include? "<title>RefactorErl</title>"
+    if `curl --silent localhost:8001`.exclude? "<title>RefactorErl</title>"
       puts "Yaws is not running on localhost:8001, with RefactorErl"
     end
 
@@ -182,7 +179,7 @@ class Referl < Formula
       system "referl", "-dir", data_dir, "-yaws_path", yaws_path, "-web2"
     end
     puts "Forked pid: #{pid}"
-    sleep 1 # TODO: Must
+    wait_for_pid(pid)
 
     # CHECK IF THE PARENT PROCESS EVEN ALIVE
     begin
@@ -191,7 +188,6 @@ class Referl < Formula
       puts "No pid!"
       false
     end
-
 
     all_pids = `pgrep -f "bin/referl"`.split("\n")
     exec_script_pid = `pgrep -f "referl_boot"`.split("\n")[0]
@@ -237,22 +233,22 @@ class Referl < Formula
       puts "No/Multiple referl proc. were found with this proc. Count: #{possible_pids.length}"
     end
 
-    sleep 3 # TODO: It is must, to give time to YAWS to stand
-    if ! (`curl --silent localhost:8001`.include? "<title>RefactorErl</title>")
+    wait_for_pid(pid)
+    if `curl --silent localhost:8001`.exclude? "<title>RefactorErl</title>"
       puts "That it is not our YAWS."
       success = false
-    elsif
+    else
       puts "This is our YAWS"
     end
-    
-    sleep 1 # TODO: MUST ???
+
+    wait_for_pid(pid)
+    sleep 3 # Because of YAWS, as seen in YAWS's formula
     kill_erts exec_script_pid
     Process.waitpid(pid, 0)
-    
+
     `rm -r #{data_dir}`
     success
   end
-
 
   test do
     # Test Case #1 - Starting referl with bad arguments => should fail
@@ -270,13 +266,7 @@ class Referl < Formula
     # Test Case #5 - Testing with YAWS
     assert_equal(true, test_referl_with_yaws)
 
-    # ? Észrevételek
-    # Todo yaws csak igy:
-    # ri:start_web2([{yaws_path, "/usr/local/Cellar/yaws/2.0.9/lib/yaws-2.0.9/ebin"}]).
-
     # git push https://github.com/robertfiko/homebrew-core/ referl
-
-
     ohai " ✅ ALL TESTS ARE PASSED. ✅"
   end
 end
