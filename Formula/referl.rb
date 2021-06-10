@@ -264,7 +264,6 @@ class Referl < Formula
     # Test Case #5 - Testing with YAWS
     assert_equal(true, test_referl_with_yaws)
 
-    # git push https://github.com/robertfiko/homebrew-core/ referl
     ohai " ✅ ALL TESTS ARE PASSED. ✅"
   end
 end
