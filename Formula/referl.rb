@@ -5,10 +5,8 @@
 class Referl < Formula
   desc "Refactoring software for Erlang language by ELTE and Ericson"
   homepage "https://plc.inf.elte.hu/erlang/index.html"
-  # url "https://plc.inf.elte.hu/erlang/dl/refactorerl-0.9.20.08_v2.zip"
   url "https://plc.inf.elte.hu/erlang/dl/RefactorErl_trunk.zip"
   version "0.9.20.08"
-  # sha256 "52f0778c42f7c48490f93b07a435cb3f8c3573810765b6255145e6972edc0cea"
   sha256 "8a1bd8b17e872457027203cd256cdb03628b9589d0e6d922027e29566cb78c3b"
   license "LGPL-3.0-only" # SPDX Representation for: GNU Lesser General Public License v3.0 only
 
@@ -234,15 +232,15 @@ class Referl < Formula
     end
 
     wait_for_pid(pid)
-    if `curl --silent localhost:8001`.exclude? "<title>RefactorErl</title>"
-      puts "That it is not our YAWS."
-      success = false
-    else
+    sleep 3 # Because of YAWS, as seen in YAWS's formula
+
+    if `curl --silent localhost:8001`.include? "<title>RefactorErl</title>"
       puts "This is our YAWS"
+    else
+      puts "That it is not our YAWS. (should be)"
+      success = false
     end
 
-    wait_for_pid(pid)
-    sleep 3 # Because of YAWS, as seen in YAWS's formula
     kill_erts exec_script_pid
     Process.waitpid(pid, 0)
 
